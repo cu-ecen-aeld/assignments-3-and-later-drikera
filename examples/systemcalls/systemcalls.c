@@ -1,3 +1,8 @@
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "systemcalls.h"
 
 /**
@@ -16,8 +21,50 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+   //pid_t pid;
+   int wstatus;
+   
+   wstatus = system ( cmd );
 
-    return true;
+   if ( wstatus == -1 ) {
+      // child process could not be created
+      return false;
+   }
+   if ( cmd == NULL ) {
+      // null command
+      return false; 
+   }
+
+   //pid = wait ( &wstatus );
+
+   //if ( pid == -1 ) {
+   //   printf("\n\n\nFailed here\n\n\n");
+   //   return false;
+   //}
+
+
+   //printf("\n\n\nThis is the     wstatus: %d\n\n\n", wstatus );
+   //printf("\n\n\nExited:                  %s\n\n\n", (WIFEXITED ( wstatus ) ? "true" : "false") ); 
+   //printf("\n\n\nThis is the exit status: %d\n\n\n", WEXITSTATUS ( wstatus ) );
+   //printf("\n\n\nTerm by a signal         %s\n\n\n", (WIFSIGNALED ( wstatus ) ? "true" : "false") ); 
+   //printf("\n\n\nThis is the signal:      %d\n\n\n", WTERMSIG ( wstatus ) );
+
+   //return WIFEXITED ( wstatus );
+
+   if ( WIFEXITED ( wstatus ) != 0 ) {
+      if ( WEXITSTATUS( wstatus ) == 0 ) {
+         return true;
+      }
+      else {
+         return false;
+      }
+      //else if ( WEXITSTATUS( wstatus ) != 0 ) {
+      //   return false;
+      //}
+   } else {
+      return false;
+   }
+
 }
 
 /**
@@ -59,9 +106,48 @@ bool do_exec(int count, ...)
  *
 */
 
-    va_end(args);
+   pid_t child_pid;
+   int wstatus;
+   int rc;
 
-    return true;
+   rc = 0;
+   if ( command[0][0] != '/' ) {
+      printf("not absolute path\n\n");
+      return false;
+   }
+
+   child_pid = fork ();
+
+
+   if ( child_pid == 0 ) {
+      // child
+      rc = execv ( command[0], command) ;
+      if ( rc == -1 ) {
+         return false;
+      }
+   } else {
+      // parent
+      printf("\nCommand[0]: %s\n", command[0]);
+      waitpid (child_pid, &wstatus, 0 );
+      if ( WIFEXITED ( wstatus ) != 0 ) {
+         if ( WEXITSTATUS ( wstatus ) == 0 ) {
+            printf("test complete\n");
+            return true;
+         } else {
+            printf("exited with status non0\n");
+            printf("test failed 1\n");
+            return false;
+         }
+      } else {
+         printf("test failed 2\n");
+         return false;
+      }
+   } 
+
+   va_end(args);
+
+   printf("test failed 3\n");
+   return false;
 }
 
 /**
@@ -92,8 +178,58 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+   int fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 0644 );
 
-    va_end(args);
+   if ( fd < 0 ) {
+      return false;
+   }
 
-    return true;
+   pid_t childpid;
+   int rc;
+   int wstatus;
+
+   childpid = fork();
+
+   if ( childpid == -1 ) {
+      // fork error
+      printf("Fail 1\n");
+      return false;
+   }
+   else if ( childpid == 0 ) {
+      // child
+      if ( dup2( fd, 1 ) < 0 ) {
+         // error with dup2
+         printf("Fail 2\n");
+         return false;
+      }
+      close ( fd );
+      //rc = execvp("/bin/echo", &command[1] );
+      //printf("\n\n\ncommand[0]: %s\n\n\n", command[0] );
+      rc = execvp ( command[0], command );
+      if ( rc == -1 ) {
+         return false;  
+      }
+   }
+   else {
+      // parent
+      close(fd);
+      wait ( &wstatus );
+      if ( WIFEXITED ( wstatus ) != 0 ) {
+         printf("Exited\n");
+         if ( WEXITSTATUS ( wstatus ) == 0 ) {
+            printf("Exited with 0\n");
+            return true;
+         } else {
+            printf("Exited with non0\n");
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
+
+
+   va_end(args);
+
+   return false;
 }

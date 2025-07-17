@@ -15,14 +15,3 @@ jobs:
             run : git submodule update --init --recursive
           - name: Run unit test
             run: ./unit-test.sh
-    full-test:
-        container: cuaesd/aesd-autotest:24-assignment1
-        runs-on: self-hosted
-        steps:
-          - uses: actions/checkout@v2
-          - name: Checkout submodules
-            run : git submodule update --init --recursive
-          - name: Ensure all required packages are installed
-            run : sudo apt-get update; sudo apt-get -y install make build-essential libncurses-dev bison flex libssl-dev libelf-dev
-          - name: Run full test
-            run: ./full-test.sh

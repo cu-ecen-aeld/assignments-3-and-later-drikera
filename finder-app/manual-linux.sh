@@ -22,6 +22,7 @@ else
 fi
 
 mkdir -p ${OUTDIR}
+pushd .
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/linux-stable" ]; then
@@ -112,7 +113,13 @@ sudo mknod -m 666 ${OUTDIR}/rootfs/dev/null c 1 3
 sudo mknod -m 666 ${OUTDIR}/rootfs/dev/console c 5 1
 
 # TODO: Clean and build the writer utility
-pushd /home/adriker/Documents/assignments-3-and-later-drikera/finder-app
+#pushd /home/adriker/Documents/assignments-3-and-later-drikera/finder-app
+curdir=$(pwd)
+#pushd ../../finder-app
+#pushd ../rootfs/home
+echo "About to popd"
+popd
+pwd
 echo "# TODO: Clean and build the writer utility"
 make clean
 make writer CROSS_COMPILE=aarch64-none-linux-gnu- 
@@ -140,7 +147,8 @@ cat ${OUTDIR}/rootfs/home/finder-test.sh | \
    > ${OUTDIR}/rootfs/home/temp
 mv ${OUTDIR}/rootfs/home/temp ${OUTDIR}/rootfs/home/finder-test.sh
 sudo chmod +111 ${OUTDIR}/rootfs/home/finder-test.sh
-popd
+#popd
+cd ${curdir}
 # TODO: Chown the root directory
 echo "# TODO: Chown the root directory"
 sudo chown -R root:root ${OUTDIR}/rootfs

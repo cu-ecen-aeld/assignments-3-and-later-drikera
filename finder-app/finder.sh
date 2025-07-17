@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # finder.sh
 # arg1: path to a directory on the filesystem [filesdir]

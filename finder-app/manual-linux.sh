@@ -126,7 +126,8 @@ cp writer   ${OUTDIR}/rootfs/home
 mkdir -p ${OUTDIR}/rootfs/home/conf
 cp ./conf/* ${OUTDIR}/rootfs/home/conf
 
-imgdir=$(find ${OUTDIR} -name "Image" | grep "arm64")
+#imgdir=$(find ${OUTDIR} -name "Image" | grep "arm64")
+imgdir=$(find ${OUTDIR} -name "Image" )
 
 #echo "imgdir ${imgdir}"
 #echo "outdir ${OUTDIR}"

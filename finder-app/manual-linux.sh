@@ -85,8 +85,8 @@ make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 make CONFIG_PREFIX=${OUTDIR}/rootfs ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
 
 echo "Library dependencies"
-sudo chown root:root /usr/bin/busybox
-sudo chmod u+s /usr/bin/busybox
+#sudo chown root:root /usr/bin/busybox
+#sudo chmod u+s /usr/bin/busybox
 ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "Shared library"
 

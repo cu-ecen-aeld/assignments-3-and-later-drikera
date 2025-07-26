@@ -71,7 +71,7 @@ OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
 
 # Change for Assignment 4
 #     Write output of finder comppand to /tmp/assignment4-result.txt
-echo $(OUTPUTSTRING) > /tmp/assignment4-result.txt
+echo ${OUTPUTSTRING} > /tmp/assignment4-result.txt
 
 # remove temporary directories
 rm -rf /tmp/aeld-data

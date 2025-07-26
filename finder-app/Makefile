@@ -1,7 +1,7 @@
 
 # vim: set noexpandtab:
 
-CROSS_COMPILE:=
+CROSS_COMPILE:=aarch64-none-linux-gnu-
 
 all: writer
 

@@ -2,12 +2,12 @@
 # vim: set noexpandtab:
 
 #CROSS_COMPILE:=aarch64-none-linux-gnu-
-CROSS_COMPILE:=
+#CROSS_COMPILE:=
 
 all: writer
 
 writer: writer.c
-	$(CROSS_COMPILE)gcc writer.c -o writer
+	$(CC) writer.c -o writer
 
 .PHONY: clean
 

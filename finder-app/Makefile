@@ -7,6 +7,7 @@
 all: writer
 
 writer: writer.c
+	asfhjkads
 	$(CC) $(CFLAGS) writer.c -o writer $(LDFLAGS)
 
 .PHONY: clean

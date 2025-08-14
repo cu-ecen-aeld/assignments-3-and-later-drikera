@@ -7,7 +7,7 @@
 all: writer
 
 writer: writer.c
-	$(CC) writer.c -o writer
+	$(CC) $(CFLAGS) writer.c -o writer $(LDFLAGS)
 
 .PHONY: clean
 
